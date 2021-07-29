@@ -121,3 +121,44 @@ Flow Control：
 从发展的时间上看
 * 滑动窗口在TCP设计之初就引入了。
 * Nagle 拥塞控制是在 TCP 后来的运行过程中产生拥塞问题之后再找到的一种解决办法
+
+<br>
+
+## 4. Nagle 在 linux 中的实现
+----
+
+``` cpp
+/* Return false, if packet can be sent now without violation Nagle's rules:
+ * 1. It is full sized. (provided by caller in %partial bool)
+ * 2. Or it contains FIN. (already checked by caller)
+ * 3. Or TCP_CORK is not set, and TCP_NODELAY is set.
+ * 4. Or TCP_CORK is not set, and all sent packets are ACKed.
+ *    With Minshall's modification: all sent small packets are ACKed.
+ */
+static bool tcp_nagle_check(bool partial, const struct tcp_sock *tp,
+			    int nonagle)
+{
+	return partial &&
+		((nonagle & TCP_NAGLE_CORK) ||
+		 (!nonagle && tp->packets_out && tcp_minshall_check(tp)));
+}
+```
+
+Nagle算法的规则（可参考tcp_output.c文件里tcp_nagle_check函数注释）：
+1. 如果包长度达到MSS，则允许发送；
+2. 如果该包含有FIN，则允许发送；
+3. 设置了TCP_NODELAY选项，则允许发送；
+4. 未设置TCP_CORK选项时，若所有发出去的小数据包（包长度小于MSS）均被确认，则允许发送；
+5. 上述条件都未满足，但发生了超时（一般为200ms），则立即发送。
+
+<br>
+
+所以我们现在可以回答开篇的两个问题
+
+* 前者要求网络上只能有一个未确认的分组，而后者允许在没有收到确认的情况下发送多个分组。
+
+    > 如果每个数据包都是达到了 MSS 的，那就不会有 Nagle 的限制，仍然可以发送多个分组
+
+* 既然 Nalge 算法要求了网络上只能有一个为确认的分组，那 TCP 分组报文失序又是从何而来?
+
+    > 如问题1， 如果每个报文都是满足 MSS，那就会连续发送，所以就有可能导致接收端报文失序

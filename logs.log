@@ -1,0 +1,13 @@
+三次握手的第一部分 连接成功的日志
+Running as user "root" and group "root". This could be dangerous.
+Capturing on 'tun0'
+    1 0.000000000  192.168.0.1 → 192.168.0.2  TCP 40 48582 → 80 [FIN, ACK] Seq=1 Ack=1 Win=29200 Len=0
+    2 0.206488337  192.168.0.1 → 192.168.0.2  TCP 40 [TCP Retransmission] 48582 → 80 [FIN, ACK] Seq=1 Ack=1 Win=29200 Len=0
+    3 0.625560221  192.168.0.1 → 192.168.0.2  TCP 40 [TCP Retransmission] 48582 → 80 [FIN, ACK] Seq=1 Ack=1 Win=29200 Len=0
+    4 0.881571303 fe80::6095:d1f3:63a1:f2df → ff02::2      ICMPv6 48 Router Solicitation
+    5 1.457953525  192.168.0.1 → 192.168.0.2  TCP 40 [TCP Retransmission] 48582 → 80 [FIN, ACK] Seq=1 Ack=1 Win=29200 Len=0
+    6 1.599148291  192.168.0.1 → 192.168.0.2  TCP 60 48604 → 80 [SYN] Seq=0 Win=29200 Len=0 MSS=1460 SACK_PERM=1 TSval=2640179 TSecr=0 WS=128
+    7 1.599417705  192.168.0.2 → 192.168.0.1  TCP 1460 80 → 48604 [SYN, ACK] Seq=0 Ack=1 Win=10 Len=0
+    8 1.599429599  192.168.0.1 → 192.168.0.2  TCP 40 48604 → 80 [ACK] Seq=1 Ack=1 Win=29200 Len=0
+    9 3.123048199  192.168.0.1 → 192.168.0.2  TCP 40 [TCP Retransmission] 48582 → 80 [FIN, ACK] Seq=1 Ack=1 Win=29200 Len=0
+   10 6.513539703  192.168.0.1 → 192.168.0.2  TCP 40 [TCP Retransmission] 48582 → 80 [FIN, ACK] Seq=1 Ack=1 Win=29200 Len=0

@@ -151,7 +151,26 @@ impl Connection {
 		tcp_header: etherparse::TcpHeaderSlice<'a>, 
 		data: &'a [u8]
 	) -> io::Result< Option<Self> > {
-		
+
+        /* from rfc793
+        
+            TCP A                                                TCP B
+
+        1.  CLOSED                                               LISTEN
+
+        2.  SYN-SENT    --> <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
+      
+        3.  ESTABLISHED <-- <SEQ=300><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
+      
+        4.  ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK>       --> ESTABLISHED
+      
+        5.  ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK><DATA> --> ESTABLISHED
+      
+                Basic 3-Way Handshake for Connection Synchronization
+      
+                                      Figure 7.
+         */
+
 		let mut buf =  [0u8; 1500];
 			
 		if !tcp_header.syn() {

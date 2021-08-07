@@ -197,7 +197,11 @@ if (tmp_opt.saw_tstamp &&
 
 ```
 这个是因为在 linux 中开启了 ```tcp_tw_recycle``` 选项后，允许处于 TIME_WAI 端口可以在段时间内被再次使用。
-因为 NAT 是的对外 IP 只有一个， server 端的 TIME_WAT 端口被重用时，可能出现该端口缓存的 timestamp 比新连接中 SYN 带过来的 timestamp 大，所以就会连接失败
+因为 NAT 是的对外 IP 只有一个， 当对client 端的端口被重用时，可能出现该端口缓存的 timestamp 比新连接中 SYN 带过来的 timestamp 大，所以就会连接失败
+
+这里的时间戳机制一般用机器从开机到当前的一个时间差，因为每个机器开机时间可能相差很大，所以就导致了NAT 后边的每台client 机器的时间戳先后不一样。
+
+TODO ？？
 ```
 
 timestamp 的引入并不光为了缩短 time_wait 的，如果是因为 NAT 网络导致，TCP 连接被丢弃，应该首先考虑关掉 tcp_tw_recycle
